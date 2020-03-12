@@ -8,12 +8,12 @@ Class to create a thread pool in C++.
 ### General usage
 
 ```
-void ftn(int i) {
+void ftn(TYPE i) {
     /* Do something */
 }
 
 /* Initialize ThreadPool instance with 10 threads and function ftn */
-ThreadPool<int> tp(10, ftn);
+ThreadPool<TYPE> tp(10, ftn);
 
 /* Start all threads */
 tp.start()
