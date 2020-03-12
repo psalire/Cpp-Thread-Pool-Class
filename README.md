@@ -1,6 +1,8 @@
 
 # C++ Thread Pool Class
 
+Class to create a thread pool in C++.
+
 ## How to use
 
 ### General usage
