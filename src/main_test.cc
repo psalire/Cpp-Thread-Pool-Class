@@ -17,7 +17,7 @@ void fast_test(std::string s) {
     t_1.safe_print("Got: \"" + s + "\"", 0);
 }
 
-int main(int argc, char **argv) {
+int main() {
     /* Start thread pool */
     t_1.start();
     /* Push values to queue, wait 1-2 seconds between each push */

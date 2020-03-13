@@ -19,7 +19,6 @@ template <typename T> void ThreadPool<T>::main_loop(int i) {
         }
     }
     safe_print("Start.", i);
-    std::this_thread::sleep_for(std::chrono::seconds(1));
 
     /* While queue is not empty, or queue is empty but not signaled done */
     bool queue_is_empty;
