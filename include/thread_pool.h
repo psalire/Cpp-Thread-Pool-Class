@@ -9,13 +9,15 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <functional>
 
 template<typename T> class ThreadPool {
     private:
         unsigned int tot_threads;
         std::vector<std::thread> active_threads;
         std::queue<T> queue;
-        void (*ftn)(T); /* Function to call queue data on */
+        // void (*ftn)(T); /* Function to call queue data on */
+        std::function<void(T)> ftn; /* Function to call queue data on */
         std::mutex lock_queue,
                    lock_start,
                    lock_wait_for_data,
