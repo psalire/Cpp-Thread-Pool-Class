@@ -1,5 +1,5 @@
 
-template <typename T> ThreadPool<T>::ThreadPool(unsigned int val, void (*f)(T)) {
+template <typename T> ThreadPool<T>::ThreadPool(unsigned int val, std::function<void(T)> f) {
     tot_threads = val;
     ftn = f;
     done = false;
@@ -103,5 +103,5 @@ template <typename T> void ThreadPool<T>::safe_print(std::string s, int i) {
 }
 template <typename T> void ThreadPool<T>::safe_print(std::string s) {
     std::lock_guard<std::mutex> lock(lock_stdout);
-    std::cout << "[THREAD]" << s << std::endl;
+    std::cout << "           " << s << std::endl;
 }

@@ -34,7 +34,7 @@ template<typename T> class ThreadPool {
         bool is_done();
         void set_done();
     public:
-        ThreadPool(unsigned int, void (*f)(T));
+        ThreadPool(unsigned int, std::function<void(T)> ftn);
         ~ThreadPool();
         void start();
         void push_to_queue(T);
