@@ -3,6 +3,8 @@
 
 void sleep_test(int i);
 void fast_test(std::string s);
+
+/* Construct thread pools globally for convenience */
 ThreadPool<int> t_1(10, sleep_test);
 ThreadPool<std::string> t_2(20, fast_test);
 
@@ -14,7 +16,7 @@ void sleep_test(int i) {
 }
 /* Print a string */
 void fast_test(std::string s) {
-    t_1.safe_print("Got: \"" + s + "\"", 0);
+    t_2.safe_print("Got: \"" + s + "\"", 0);
 }
 
 int main() {
@@ -22,7 +24,7 @@ int main() {
     t_1.start();
     /* Push values to queue, wait 1-2 seconds between each push */
     /* Thread pool automatically starts processing as pushed to queue */
-    for (int i = 0; i < 44; i++) {
+    for (int i = 0; i < 33; i++) {
         t_1.push_to_queue(i);
         t_1.safe_print("Pushed val " + std::to_string(i), 0);
         std::this_thread::sleep_for(std::chrono::seconds(rand()%2+1));
