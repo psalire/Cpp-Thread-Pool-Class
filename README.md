@@ -5,7 +5,9 @@ Class to create a thread pool in C++.
 
 ## How it works
 
-Threads in the thread pool consume data from a shared queue. If queue empty, wait for data. Else, data is pushed to the queue, threads in the thread pool will pop the queue and call the intended function on it.
+Threads in the thread pool consume data from a shared queue.
+
+If queue is empty, wait for data. Else, once data is pushed to the queue, threads in the thread pool will pop the queue and call the intended function on it.
 
 ## How to use
 
