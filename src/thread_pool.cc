@@ -38,9 +38,6 @@ template <typename T> void ThreadPool<T>::main_loop(int i) {
         /* Pop queue and feed into function */
         T val;
         if (pop_queue(val)) {
-            std::stringstream s;
-            s << "Popped val " << val;
-            safe_print(s.str(), i);
             ftn(val);
         }
         else {
@@ -61,7 +58,6 @@ template <typename T> bool ThreadPool<T>::is_queue_empty() {
 template <typename T> void ThreadPool<T>::push_to_queue(T val) {
     std::lock_guard<std::mutex> lock(lock_queue);
     queue.push(val);
-    // safe_print("Pushed val " + std::to_string(val), i);
     if (queue.size() >= tot_threads) {
         cv_queue_empty.notify_all();
     }
@@ -104,4 +100,8 @@ template <typename T> void ThreadPool<T>::set_done() {
 template <typename T> void ThreadPool<T>::safe_print(std::string s, int i) {
     std::lock_guard<std::mutex> lock(lock_stdout);
     std::cout << "[THREAD_" << i << "] " << s << std::endl;
+}
+template <typename T> void ThreadPool<T>::safe_print(std::string s) {
+    std::lock_guard<std::mutex> lock(lock_stdout);
+    std::cout << "[THREAD]" << s << std::endl;
 }
