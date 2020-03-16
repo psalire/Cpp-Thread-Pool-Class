@@ -37,10 +37,7 @@ template<typename T> class ThreadPool {
         void set_done();
     public:
         /* Constructors */
-        ThreadPool() = default;
         ThreadPool(unsigned int, std::function<void(T)> ftn);
-        /* Assignment operator */
-        
         /* Destructor */
         ~ThreadPool();
         void start();
