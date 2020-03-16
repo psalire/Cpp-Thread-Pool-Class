@@ -19,6 +19,7 @@ template<typename T> class ThreadPool {
         std::function<void(T)> ftn; /* Function to call queue data on */
         std::mutex lock_queue,
                    lock_start,
+                   lock_is_started,
                    lock_wait_for_data,
                    lock_done,
                    lock_stdout;
@@ -29,12 +30,18 @@ template<typename T> class ThreadPool {
         bool pop_queue(T &);
         void main_loop(int); /* Where threads execute */
         
-        /* Functions */
+        /* Methods */
         bool is_queue_empty();
         bool is_done();
+        bool is_started();
         void set_done();
     public:
+        /* Constructors */
+        ThreadPool() = default;
         ThreadPool(unsigned int, std::function<void(T)> ftn);
+        /* Assignment operator */
+        
+        /* Destructor */
         ~ThreadPool();
         void start();
         void push_to_queue(T);

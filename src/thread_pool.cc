@@ -9,12 +9,14 @@ template <typename T> ThreadPool<T>::ThreadPool(unsigned int val, std::function<
     }
 }
 template <typename T> ThreadPool<T>::~ThreadPool() {
-    join_pool();
+    if (is_started()) {
+        join_pool();
+    }
 }
 template <typename T> void ThreadPool<T>::main_loop(int i) {
     {
         std::unique_lock<std::mutex> u_lock_start(lock_start);
-        while (!is_start) {
+        while (!is_started()) {
             cv_start.wait(u_lock_start);
         }
     }
@@ -95,6 +97,10 @@ template <typename T> bool ThreadPool<T>::is_done() {
 template <typename T> void ThreadPool<T>::set_done() {
     std::lock_guard<std::mutex> lock(lock_done);
     done = true;
+}
+template <typename T> bool ThreadPool<T>::is_started() {
+    std::lock_guard<std::mutex> lock(lock_is_started);
+    return is_start;
 }
 /* Print to stdout with lock */
 template <typename T> void ThreadPool<T>::safe_print(std::string s, int i) {
