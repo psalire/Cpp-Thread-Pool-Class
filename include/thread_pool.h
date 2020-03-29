@@ -22,6 +22,7 @@ template<typename T> class ThreadPool {
         std::mutex lock_queue,
                    lock_start,
                    lock_wait_for_data,
+                   lock_started,
                    #ifdef PRINT_DEBUG
                    lock_stdout,
                    #endif
@@ -33,10 +34,12 @@ template<typename T> class ThreadPool {
         bool pop_queue(T &);
         void main_loop(int); /* Where threads execute */
         
-        /* Functions */
+        /* Methods */
         bool is_queue_empty();
         bool is_done();
         void set_done();
+        bool is_started();
+        void set_start();
     public:
         ThreadPool(unsigned int, std::function<void(T)> ftn);
         ~ThreadPool();

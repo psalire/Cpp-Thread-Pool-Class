@@ -14,7 +14,7 @@ template <typename T> ThreadPool<T>::~ThreadPool() {
 template <typename T> void ThreadPool<T>::main_loop(int i) {
     {
         std::unique_lock<std::mutex> u_lock_start(lock_start);
-        while (!is_start) {
+        while (!is_started()) {
             cv_start.wait(u_lock_start);
         }
     }
@@ -55,7 +55,7 @@ template <typename T> void ThreadPool<T>::main_loop(int i) {
 }
 /* Start main_loop i.e. processing queue with thread pool */
 template <typename T> void ThreadPool<T>::start() {
-    is_start = true;
+    set_start();
     cv_start.notify_all();
 }
 template <typename T> bool ThreadPool<T>::is_queue_empty() {
@@ -97,7 +97,14 @@ template <typename T> void ThreadPool<T>::join_pool() {
     }
     active_threads.clear();
 }
-/* Indicates if join_pool() has been called */
+template <typename T> bool ThreadPool<T>::is_started() {
+    std::lock_guard<std::mutex> lock(lock_started);
+    return is_start;
+}
+template <typename T> void ThreadPool<T>::set_start() {
+    std::lock_guard<std::mutex> lock(lock_started);
+    is_start = true;
+}
 template <typename T> bool ThreadPool<T>::is_done() {
     std::lock_guard<std::mutex> lock(lock_done);
     return done;
