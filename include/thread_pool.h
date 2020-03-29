@@ -2,6 +2,8 @@
 #ifndef _THREAD_POOL_H_
 #define _THREAD_POOL_H_
 
+#define PRINT_DEBUG
+
 #include <thread>
 #include <queue>
 #include <mutex>
@@ -19,10 +21,11 @@ template<typename T> class ThreadPool {
         std::function<void(T)> ftn; /* Function to call queue data on */
         std::mutex lock_queue,
                    lock_start,
-                   lock_is_started,
                    lock_wait_for_data,
-                   lock_done,
-                   lock_stdout;
+                   #ifdef PRINT_DEBUG
+                   lock_stdout,
+                   #endif
+                   lock_done;
         std::condition_variable cv_queue_empty,
                                 cv_start;
         bool done, /* Ready to exit */
@@ -30,21 +33,20 @@ template<typename T> class ThreadPool {
         bool pop_queue(T &);
         void main_loop(int); /* Where threads execute */
         
-        /* Methods */
+        /* Functions */
         bool is_queue_empty();
         bool is_done();
-        bool is_started();
         void set_done();
     public:
-        /* Constructors */
         ThreadPool(unsigned int, std::function<void(T)> ftn);
-        /* Destructor */
         ~ThreadPool();
         void start();
         void push_to_queue(T);
         void join_pool();
+        #ifdef PRINT_DEBUG
         void safe_print(std::string, int);
         void safe_print(std::string);
+        #endif
 };
 
 /* Include .cc rather than compile to support any type for template */

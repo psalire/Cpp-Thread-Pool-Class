@@ -9,18 +9,18 @@ template <typename T> ThreadPool<T>::ThreadPool(unsigned int val, std::function<
     }
 }
 template <typename T> ThreadPool<T>::~ThreadPool() {
-    if (is_started()) {
-        join_pool();
-    }
+    join_pool();
 }
 template <typename T> void ThreadPool<T>::main_loop(int i) {
     {
         std::unique_lock<std::mutex> u_lock_start(lock_start);
-        while (!is_started()) {
+        while (!is_start) {
             cv_start.wait(u_lock_start);
         }
     }
+    #ifdef PRINT_DEBUG
     safe_print("Start.", i);
+    #endif
 
     /* While queue is not empty, or queue is empty but not signaled done */
     bool queue_is_empty;
@@ -32,9 +32,13 @@ template <typename T> void ThreadPool<T>::main_loop(int i) {
                 if (is_done()) {
                     return;
                 }
+                #ifdef PRINT_DEBUG
                 safe_print("Wait...", i);
+                #endif
                 cv_queue_empty.wait(u_lock);
+                #ifdef PRINT_DEBUG
                 safe_print("Wake", i);
+                #endif
             }
         }
         /* Pop queue and feed into function */
@@ -42,9 +46,11 @@ template <typename T> void ThreadPool<T>::main_loop(int i) {
         if (pop_queue(val)) {
             ftn(val);
         }
+        #ifdef PRINT_DEBUG
         else {
             safe_print("Pop fail", i);
         }
+        #endif
     }
 }
 /* Start main_loop i.e. processing queue with thread pool */
@@ -85,7 +91,9 @@ template <typename T> void ThreadPool<T>::join_pool() {
     for (unsigned int i = 0; i < active_threads.size(); i++) {
         cv_queue_empty.notify_all();
         active_threads[i].join();
+        #ifdef PRINT_DEBUG
         safe_print("Exited.", i+1);
+        #endif
     }
     active_threads.clear();
 }
@@ -98,10 +106,7 @@ template <typename T> void ThreadPool<T>::set_done() {
     std::lock_guard<std::mutex> lock(lock_done);
     done = true;
 }
-template <typename T> bool ThreadPool<T>::is_started() {
-    std::lock_guard<std::mutex> lock(lock_is_started);
-    return is_start;
-}
+#ifdef PRINT_DEBUG
 /* Print to stdout with lock */
 template <typename T> void ThreadPool<T>::safe_print(std::string s, int i) {
     std::lock_guard<std::mutex> lock(lock_stdout);
@@ -111,3 +116,4 @@ template <typename T> void ThreadPool<T>::safe_print(std::string s) {
     std::lock_guard<std::mutex> lock(lock_stdout);
     std::cout << "           " << s << std::endl;
 }
+#endif
