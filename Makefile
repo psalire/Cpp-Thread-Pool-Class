@@ -1,7 +1,7 @@
 
 BIN = bin
 EXECS = main_test
-CC = g++ -std=c++17 -Iinclude -Isrc
+CC = g++ -std=c++17 -O3 -Iinclude -Isrc
 FLAGS = -Wall -Wextra -Wpedantic
 LINKS = -pthread
 SRC = $(wildcard src/*.cc)
