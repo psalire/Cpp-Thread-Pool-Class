@@ -7,6 +7,7 @@
 #include <thread>
 #include <queue>
 #include <mutex>
+#include <atomic>
 #include <condition_variable>
 #include <iostream>
 #include <string>
@@ -21,16 +22,14 @@ template<typename T> class ThreadPool {
         std::function<void(T)> ftn; /* Function to call queue data on */
         std::mutex lock_queue,
                    lock_start,
-                   lock_wait_for_data,
-                   lock_started,
                    #ifdef PRINT_DEBUG
                    lock_stdout,
                    #endif
-                   lock_done;
+                   lock_wait_for_data;
         std::condition_variable cv_queue_empty,
                                 cv_start;
-        bool done, /* Ready to exit */
-             is_start;
+        std::atomic<bool> done, /* Ready to exit */
+                          is_start;
         bool pop_queue(T &);
         void main_loop(int); /* Where threads execute */
         

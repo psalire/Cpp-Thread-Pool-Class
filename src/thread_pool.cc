@@ -98,19 +98,15 @@ template <typename T> void ThreadPool<T>::join_pool() {
     active_threads.clear();
 }
 template <typename T> bool ThreadPool<T>::is_started() {
-    std::lock_guard<std::mutex> lock(lock_started);
     return is_start;
 }
 template <typename T> void ThreadPool<T>::set_start() {
-    std::lock_guard<std::mutex> lock(lock_started);
     is_start = true;
 }
 template <typename T> bool ThreadPool<T>::is_done() {
-    std::lock_guard<std::mutex> lock(lock_done);
     return done;
 }
 template <typename T> void ThreadPool<T>::set_done() {
-    std::lock_guard<std::mutex> lock(lock_done);
     done = true;
 }
 #ifdef PRINT_DEBUG
