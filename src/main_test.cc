@@ -9,7 +9,7 @@ ThreadPool<int> t_1(10, sleep_test);
 ThreadPool<std::string> t_2(20, fast_test);
 
 /* Sleep for 1-3 seconds */
-void sleep_test(int i) {
+void sleep_test([[maybe_unused]] int i) {
     int time = rand()%3+1;
     #ifdef PRINT_DEBUG
     t_1.safe_print("Sleeping for " + std::to_string(time) + " sec...");
